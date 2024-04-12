@@ -1,8 +1,10 @@
 #include <mp3.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
-int read_mp3_audio_tag(mp3_audio_tag* tag, char* buffer, uint32_t size);
+int read_mp3_audio_tag(mp3_audio_tag* tag, unsigned char* buffer, uint32_t size);
+extern char* genres[];
 
 int main(){
 		puts("Opening file...");
@@ -22,6 +24,9 @@ int main(){
 		printf("Title: %s\n", tag.title);
 		printf("Artist: %s\n", tag.artist);
 		printf("Album: %s\n", tag.album);
+		printf("Year: %s\n", tag.year);
+		if (tag.genre > 125) puts("Genre: Unknown");
+		else printf("Genre: %s\n", genres[tag.genre]);
 		fclose(file);
 		free(data);
 }
