@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 #include <mp3.h>
 
 typedef uint32_t _mp3_header;
@@ -11,15 +13,18 @@ struct _mp3_audio_tag{
     unsigned char year[4];
     unsigned char comment[30];
     unsigned char genre;
-};
+}__attribute__((packed));
 int read_mp3_audio_tag(mp3_audio_tag* tag, char* buffer, uint32_t size){
-    _mp3_audio_tag _tag;
+    struct _mp3_audio_tag _tag;
 
     if (size <= 128) return 1;
 
-    memcpy(&_tag, buffer + size - sizeof(_mp3_audio_tag), sizeof(_mp3_audio_tag));
-
-    if (_tag.tag[0] != 'T' || _tag.tag[1] != 'A' || _tag.tag[2] != 'G') return 1;
+    memcpy(&_tag, buffer + size - sizeof(struct _mp3_audio_tag), sizeof(struct _mp3_audio_tag));
+		printf("Read at offset %lx\n", size - sizeof(struct _mp3_audio_tag));
+    if (_tag.tag[0] != 'T' || _tag.tag[1] != 'A' || _tag.tag[2] != 'G'){
+		printf("Tag: %x%c%c\n", *(buffer + size - sizeof(struct _mp3_audio_tag)), _tag.tag[1], _tag.tag[2]);
+		return 1;
+	}
 
     memcpy(tag->title, _tag.title, sizeof(_tag.title));
     memcpy(tag->artist, _tag.artist, sizeof(_tag.artist));
