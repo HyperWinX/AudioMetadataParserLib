@@ -1,29 +1,31 @@
-enum {
+#include <stdint.h>
+
+enum mpeg_ver{
     MPEG1=0,
     MPEG2=1,
     mv_RESERVED=2,
     MPEG2_5=3
-} mpeg_ver;
+};
 
-enum {
+enum layer_tp{
     ltp_RESERVED=0,
     LAYER_I=1,
     LAYER_II=2,
     LAYER_III=3
-} layer_tp;
+};
 
-enum {
+enum chnl_mode{
     STEREO=0,
     JOINT_STEREO=1,
     DUAL_CHANNEL=2,
     SINGLE_CHANNEL=3
-} chnl_mode;
+};
 
-enum {
+enum emphs{
     NONE=0,
     FIFTY_FIFTEEN=2,
     CCIT=3
-} emphs;
+};
 
 typedef struct mp3_audio_tag{
     unsigned char title[31];

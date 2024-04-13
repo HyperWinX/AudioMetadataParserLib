@@ -115,7 +115,7 @@ __attribute__((visibility("hidden"))) uint16_t _calculate_bitrate_v2_l23(uint8_t
   }
 }
 
-__attribute__((visibility("hidden"))) enum bitrt _get_bitrate(mp3_frame_header* frame_hdr, uint8_t bits){
+__attribute__((visibility("hidden"))) uint16_t _get_bitrate(mp3_frame_header* frame_hdr, uint8_t bits){
   if (frame_hdr->mpeg_version == MPEG1){
     if (frame_hdr->layer_type == LAYER_I)
       return _calculate_bitrate_v1_l1(bits);
@@ -183,13 +183,13 @@ int read_first_frameheader(mp3_frame_header* frame_hdr, unsigned char* buffer, u
   }
 
   // Set layer type
-  if ((frame->layer_type = (enum layer_tp)(((unsigned char*)_hdr)[1] & 0b00000110) >> 1) == ltp_RESERVED){
-    frame->layer_type = 0;
+  if ((frame_hdr->layer_type = (enum layer_tp)(((unsigned char*)_hdr)[1] & 0b00000110) >> 1) == ltp_RESERVED){
+    frame_hdr->layer_type = 0;
     return 1;
   }
 
   // Set protection bit
-  frame->protection_enabled = ((unsigned char*)_hdr)[1] & 0b00000001;
+  frame_hdr->protection_enabled = ((unsigned char*)_hdr)[1] & 0b00000001;
 
   // Set bitrate
   frame_hdr->bitrate = _get_bitrate(frame_hdr, ((unsigned char*)_hdr)[2] >> 4);

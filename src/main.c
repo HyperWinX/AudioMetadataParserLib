@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 int read_mp3_audio_tag(mp3_audio_tag* tag, unsigned char* buffer, uint32_t size);
+int read_first_frameheader(mp3_frame_header* frame_hdr, unsigned char* buffer, uint32_t size);
 extern char* genres[];
 
 int main(){
@@ -27,6 +28,18 @@ int main(){
 		printf("Year: %s\n", tag.year);
 		if (tag.genre > 125) puts("Genre: Unknown");
 		else printf("Genre: %s\n", genres[tag.genre]);
+		puts("\nTrying to read first frame...");
+		mp3_frame_header hdr = {0};
+		if (read_first_frameheader(&hdr, data, (uint32_t)size)){
+				perror("First frame header parse error");
+				exit(1);
+		}
+		switch(hdr.mpeg_version){
+				case MPEG1: puts("MPEG version: MPEG1");
+				case MPEG2: puts("MPEG version: MPEG2");
+				case MPEG2_5: puts("MPEG version: MPEG2.5");
+				default: return 1;
+		}
 		fclose(file);
 		free(data);
 }
